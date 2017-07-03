@@ -12,7 +12,9 @@ todos = [
     },
     {
         _id: new ObjectID(),
-        text: "secod todo"
+        text: "secod todo",
+        completed: true,
+        completedAt: 333
     }
 ];
 
@@ -120,12 +122,52 @@ describe('DELETE/ todo by id', () => {
 
     });
 
-
-
     it('should get 404 for invalid id', (done) => {
         request(app).
         delete(`/todos/${new ObjectID().toHexString()}`).
         expect(404).
+        end(done);
+
+    });
+
+});
+
+describe('PATCH/ todos/:id', () => {
+
+    it('should update the todo', (done) => {
+        const body = {
+            _id: new ObjectID(),
+            text: "first todo completed",
+            completed: true
+        };
+        request(app).
+        patch(`/todos/${todos[0]._id.toHexString()}`).
+        send(body).
+        expect(200).
+        expect((res)=>{
+            expect(res.body.todo.text).toBe(body.text);
+            expect(res.body.todo.completed).toBe(true);
+            expect(res.body.todo.completedAt).toBeA('number');
+        }).
+        end(done);
+
+    });
+
+    it('should clear completed at when todo is not completed', (done) => {
+        const body = {
+            _id: new ObjectID(),
+            text: "second todo completed",
+            completed: false
+        };
+        request(app).
+        patch(`/todos/${todos[1]._id.toHexString()}`).
+        send(body).
+        expect(200).
+        expect((res)=>{
+            expect(res.body.todo.text).toBe(body.text);
+            expect(res.body.todo.completed).toBe(false);
+            expect(res.body.todo.completedAt).toNotExist();
+        }).
         end(done);
 
     });
