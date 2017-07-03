@@ -105,3 +105,28 @@ describe('GET/ todo by id', () => {
 
     });
 });
+
+
+describe('DELETE/ todo by id', () => {
+
+    it('should get todo by id', (done) => {
+        request(app).
+        delete(`/todos/${todos[0]._id.toHexString()}`).
+        expect(200).
+        expect((res)=>{
+            expect(res.body.todo.text).toBe(todos[0].text);
+        }).
+        end(done);
+
+    });
+
+
+
+    it('should get 404 for invalid id', (done) => {
+        request(app).
+        delete(`/todos/${new ObjectID().toHexString()}`).
+        expect(404).
+        end(done);
+
+    });
+});
