@@ -4,6 +4,7 @@ const {ObjectID} = require('mongodb');
 const {mongoose} = require('./db/mongoose');
 const {Todo} = require('./models/todo');
 const {User} = require('./models/user');
+const {_} = require('lodash');
 
 const app = express();
 app.use(bodyParser.json());
@@ -31,6 +32,34 @@ app.get('/todos', (req, res) => {
     }).catch((e) => {
         res.status(400).send(e);
     })
+});
+
+
+app.patch('/todos/:id', (req, res) => {
+    const id = req.params.id;
+    const body = _.pick(req.body, ['text','completed']);
+    if (!ObjectID.isValid(id)) {
+        res.status(404).send();
+    } else{
+
+        if(_.isBoolean(body.completed) && body.completed){
+            body.completedAt = new Date().getTime();
+        }else{
+            body.completedAt = null;
+            body.completed = false;
+        }
+        Todo.findByIdAndUpdate(id,{$set: body},{new : true}).then((todo)=>{
+            if(!todo){
+                res.status(404).send();
+            }else{
+                res.send({todo});
+            }
+        }).catch((e)=>{
+            res.status(400).send(e);
+        })
+    }
+
+
 });
 
 
