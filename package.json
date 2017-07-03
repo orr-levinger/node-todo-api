@@ -4,17 +4,24 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node server/server.js",
     "test": "mocha server/**/*.test.js"
+  },
+  "engines": {
+    "node": "6.2.2"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.17.2",
-    "expect": "^1.20.2",
     "express": "^4.15.3",
-    "mocha": "^3.4.2",
     "mongodb": "^2.2.5",
-    "mongoose": "^4.5.9",
+    "mongoose": "^4.5.9"
+
+  },
+  "devDependencies":{
+    "mocha": "^3.4.2",
+    "expect": "^1.20.2",
     "supertest": "^3.0.0"
   }
 }
